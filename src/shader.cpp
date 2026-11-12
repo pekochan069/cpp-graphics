@@ -123,6 +123,8 @@ int main(int argc, char **argv) {
 
     static constexpr std::size_t max_color_val = 255;
 
+    std::filesystem::create_directory("shader-out");
+
     for (std::size_t t = 0; t < 60; ++t) {
         std::string ppm = std::format("P3\n{} {}\n{}\n", image_width, image_height, max_color_val);
 
@@ -154,7 +156,7 @@ int main(int argc, char **argv) {
             ppm += '\n';
         }
 
-        const std::string file_name = std::format("out/out-{:02d}.ppm", t);
+        const std::string file_name = std::format("shader-out/out-{:02d}.ppm", t);
 
         std::ofstream ofs{file_name};
 

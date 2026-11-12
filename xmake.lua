@@ -6,6 +6,11 @@ add_rules("plugin.compile_commands.autoupdate", {
 
 set_languages("c++26")
 
+target("lib")
+    set_kind("static")
+    set_policy("build.c++.modules", true)
+    add_files("lib/**.cppm", { public = true })
+
 target("simple")
     set_kind("binary")
     set_policy("build.c++.modules", true)
@@ -20,6 +25,12 @@ target("shader")
     set_kind("binary")
     set_policy("build.c++.modules", true)
     add_files("src/shader.cpp")
+
+target("shader2")
+    set_kind("binary")
+    add_deps("lib")
+    set_policy("build.c++.modules", true)
+    add_files("src/shader2.cpp")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io

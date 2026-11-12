@@ -6,12 +6,10 @@ int main(int argc, char **argv) {
 
     static constexpr std::size_t max_color_val = 255;
 
-    std::filesystem::create_directory("out");
+    std::filesystem::create_directory("simple-animation-out");
 
     for (std::size_t t = 0; t < 60; ++t) {
         std::string ppm = std::format("P3\n{} {}\n{}\n", image_width, image_height, max_color_val);
-
-        const std::string file_name = std::format("out/out-{:02d}.ppm", t);
 
         for (std::size_t y = 0; y < image_height; ++y) {
             for (std::size_t x = 0; x < image_width; ++x) {
@@ -27,6 +25,8 @@ int main(int argc, char **argv) {
             }
             ppm += '\n';
         }
+
+        const std::string file_name = std::format("simple-animation-out/out-{:02d}.ppm", t);
 
         std::ofstream ofs{file_name};
 

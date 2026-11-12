@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
 
     static constexpr std::size_t max_color_val = 255;
 
-    static constexpr const char* file_name = "out.ppm";
+    static constexpr const char* file_name = "simple.ppm";
 
     std::string ppm = std::format("P3\n{} {}\n{}\n", image_width, image_height, max_color_val);
 
