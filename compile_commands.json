@@ -1,0 +1,21 @@
+[
+{
+  "directory": "/home/thinline20/dev/projects/cpp-graphics",
+  "arguments": ["/usr/sbin/g++", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++26", "-fmodules", "-D_GLIBCXX_USE_CXX11_ABI=1", "-DNDEBUG", "-fmodule-mapper=/tmp/.xmake1000/261112/efbf150e650850d91ac7d104d6bd49ed/std.cc.mapper.txt", "-x", "c++", "-fmodules", "-o", "build/.objs/simple-animation/linux/x86_64/release/usr/include/c++/16/bits/std.cc.o", "/usr/include/c++/16/bits/std.cc"],
+  "file": "/usr/include/c++/16/bits/std.cc"
+},
+{
+  "directory": "/home/thinline20/dev/projects/cpp-graphics",
+  "arguments": ["/usr/sbin/g++", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++26", "-fmodules", "-D_GLIBCXX_USE_CXX11_ABI=1", "-DNDEBUG", "-fmodule-mapper=/tmp/.xmake1000/261112/d2a5e2ba7458340c1de459fef8376f03/simple-animation.cpp.mapper.txt", "-o", "build/.objs/simple-animation/linux/x86_64/release/src/simple-animation.cpp.o", "src/simple-animation.cpp"],
+  "file": "src/simple-animation.cpp"
+},
+{
+  "directory": "/home/thinline20/dev/projects/cpp-graphics",
+  "arguments": ["/usr/sbin/g++", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++26", "-fmodules", "-D_GLIBCXX_USE_CXX11_ABI=1", "-DNDEBUG", "-fmodule-mapper=/tmp/.xmake1000/261112/96337f58591306cec6f6f9c81dfe73db/simple.cpp.mapper.txt", "-o", "build/.objs/simple/linux/x86_64/release/src/simple.cpp.o", "src/simple.cpp"],
+  "file": "src/simple.cpp"
+},
+{
+  "directory": "/home/thinline20/dev/projects/cpp-graphics",
+  "arguments": ["/usr/sbin/g++", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++26", "-fmodules", "-D_GLIBCXX_USE_CXX11_ABI=1", "-DNDEBUG", "-fmodule-mapper=/tmp/.xmake1000/261112/5853ef854a81706dc8fa4e14803dbb10/shader.cpp.mapper.txt", "-o", "build/.objs/shader/linux/x86_64/release/src/shader.cpp.o", "src/shader.cpp"],
+  "file": "src/shader.cpp"
+}]
