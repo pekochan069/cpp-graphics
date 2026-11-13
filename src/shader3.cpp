@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
         o = (5.0f * (l.x-4.0f - p.y * math::vec4{-1.0f,1.0f,2.0f,0.0f}).exp() / o).tanh();
 
         return ppm::ppm::pixel{ static_cast<std::uint8_t>(o.x * 255), static_cast<std::uint8_t>(o.y * 255), static_cast<std::uint8_t>(o.z * 255) };
-    });
+    }, 6);
 
     shader_video.save_file("shader3-out/output.mp4");
 

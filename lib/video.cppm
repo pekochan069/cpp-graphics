@@ -1,5 +1,7 @@
 module;
+
 #include <stdio.h>
+#include <cassert>
 
 export module lib.video;
 
@@ -39,11 +41,21 @@ export namespace video {
 		/**
 		* accept `auto render_fn(const std::size_t frame, const std::size_t x, const std::size_t y) -> ppm::ppm::pixel`;
 		*/
-		auto render_video(std::function_ref<ppm::ppm::pixel(const std::size_t, const std::size_t, const std::size_t)> render_fn) -> void {
+		auto render_video(std::function_ref<ppm::ppm::pixel(const std::size_t, const std::size_t, const std::size_t)> render_fn, const std::size_t threads = 1) -> void {
+			assert(threads >= 1, "Threads should be greater or equals to 1");
+
 			if (this->rendered) {
 				return;
 			}
 
+			if (threads == 1) {
+				this->render_video_single_thread(render_fn);
+			} else {
+				this->render_video_multi_threaded(render_fn, threads);
+			}
+		}
+
+		auto render_video_single_thread(std::function_ref<ppm::ppm::pixel(const std::size_t, const std::size_t, const std::size_t)> render_fn) -> void {
 			for (std::size_t current_frame = 0; current_frame < this->max_frames; ++current_frame) {
 				ppm::ppm frame(this->width, this->height, this->max_color_value);
 
@@ -55,6 +67,33 @@ export namespace video {
 			}
 
 			this->rendered = true;
+		}
+
+		auto render_video_multi_threaded(std::function_ref<ppm::ppm::pixel(const std::size_t, const std::size_t, const std::size_t)> render_fn, const size_t threads) -> void {
+			std::vector<std::vector<ppm::ppm::pixel>> frame_chunks{};
+			frame_chunks.reserve(threads);
+
+			const std::size_t chunk_size = this->max_frames / threads;
+
+			for (std::size_t i = 0; i < threads; ++i) {
+				std::jthread([render_fn, chunk_size, this, i](){
+					for (std::size_t current_frame = i * chunk_size; current_frame < (i + 1) * chunk_size; ++current_frame) {
+						ppm::ppm frame(this->width, this->height, this->max_color_value);
+
+						frame.render_image([&](const std::size_t x, const std::size_t y){
+							return render_fn(current_frame, x, y);
+						});
+					}
+				});
+			}
+
+			for (size_t i = 0; i < frame_chunks.size(); ++i) {
+				std::println("chunk {}", i);
+
+				for (const auto& frame : frame_chunks[i]) {
+					std::print("{} {} {} ", frame.r, frame.g, frame.b);
+				}
+			}
 		}
 
 		auto save_file(const std::string_view path) -> void {
