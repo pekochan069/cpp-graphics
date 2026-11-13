@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 
     std::filesystem::create_directory("shader3-out");
 
-    video::video shader_video(60, 120, width, height);
+    video::video shader_video(60, 600, width, height);
 
     shader_video.render_video([](const std::size_t frame, const std::size_t x, const std::size_t y){
         const math::vec2 r = math::vec2{ static_cast<float>(width), static_cast<float>(height) };
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
         o = (5.0f * (l.x-4.0f - p.y * math::vec4{-1.0f,1.0f,2.0f,0.0f}).exp() / o).tanh();
 
         return ppm::ppm::pixel{ static_cast<std::uint8_t>(o.x * 255), static_cast<std::uint8_t>(o.y * 255), static_cast<std::uint8_t>(o.z * 255) };
-    }, 6);
+    }, 12);
 
     shader_video.save_file("shader3-out/output.mp4");
 

@@ -69,31 +69,41 @@ export namespace video {
 			this->rendered = true;
 		}
 
-		auto render_video_multi_threaded(std::function_ref<ppm::ppm::pixel(const std::size_t, const std::size_t, const std::size_t)> render_fn, const size_t threads) -> void {
-			std::vector<std::vector<ppm::ppm::pixel>> frame_chunks{};
-			frame_chunks.reserve(threads);
+		auto render_video_multi_threaded(std::function_ref<ppm::ppm::pixel(const std::size_t, const std::size_t, const std::size_t)> render_fn, const size_t num_threads) -> void {
+			std::vector<std::vector<ppm::ppm>> frame_chunks{};
+			std::vector<std::jthread> threads{};
+		
+			for (std::size_t i = 0; i < num_threads; ++i) {
+				frame_chunks.push_back({});
+			}
 
-			const std::size_t chunk_size = this->max_frames / threads;
+			const std::size_t chunk_size = this->max_frames / num_threads;
+			const std::size_t remainder = this->max_frames % num_threads;
 
-			for (std::size_t i = 0; i < threads; ++i) {
-				std::jthread([render_fn, chunk_size, this, i](){
-					for (std::size_t current_frame = i * chunk_size; current_frame < (i + 1) * chunk_size; ++current_frame) {
+			for (std::size_t i = 0; i < num_threads; ++i) {
+				const std::size_t begin = i * chunk_size + std::min(i, remainder);
+				const std::size_t end = begin + chunk_size + (i < remainder ? 1 : 0);
+
+				threads.push_back(std::jthread([render_fn, chunk_size, this, begin, end, chunk = &frame_chunks[i]](){
+					for (std::size_t current_frame = begin; current_frame < end; ++current_frame) {
 						ppm::ppm frame(this->width, this->height, this->max_color_value);
 
 						frame.render_image([&](const std::size_t x, const std::size_t y){
 							return render_fn(current_frame, x, y);
 						});
+
+						chunk->push_back(std::move(frame));
 					}
-				});
+				}));
 			}
 
-			for (size_t i = 0; i < frame_chunks.size(); ++i) {
-				std::println("chunk {}", i);
-
-				for (const auto& frame : frame_chunks[i]) {
-					std::print("{} {} {} ", frame.r, frame.g, frame.b);
-				}
+			for (auto& thread : threads) {
+				thread.join();
 			}
+
+			this->frames = frame_chunks | std::views::join | std::ranges::to<std::vector<ppm::ppm>>();
+
+			this->rendered = true;
 		}
 
 		auto save_file(const std::string_view path) -> void {
