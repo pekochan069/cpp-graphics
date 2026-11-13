@@ -5,10 +5,9 @@ import std;
 export namespace ppm {
     struct ppm {
         std::string image;
-        std::string_view path;
-        std::size_t width;
-        std::size_t height;
-        std::size_t max_color_value;
+        const std::size_t width;
+        const std::size_t height;
+        const std::uint16_t max_color_value;
         bool rendered;
 
         struct pixel {
@@ -17,9 +16,8 @@ export namespace ppm {
             std::uint16_t b;
         };
 
-        ppm(const std::size_t width, const std::size_t height, const std::string_view file_name, const std::size_t max_color_value = 255)
+        ppm(const std::size_t width, const std::size_t height, const std::uint16_t max_color_value = 255)
             : image{std::format("P3\n{} {}\n{}\n", width, height, max_color_value)}
-            , path{file_name}
             , width{width}
             , height{height}
             , max_color_value{max_color_value}
@@ -35,7 +33,7 @@ export namespace ppm {
                 for (std::size_t x = 0; x < this->width; ++x) {
                     const pixel p = render_fn(x, y);
 
-                    this->image += std::format("{} {} {}", static_cast<std::uint8_t>(p.r * 255), static_cast<std::uint8_t>(p.g * 255), static_cast<std::uint8_t>(p.b * 255));
+                    this->image += std::format("{} {} {}", p.r, p.g, p.b);
 
                     if (x != this->width - 1) {
                         this->image += ' ';
@@ -48,20 +46,20 @@ export namespace ppm {
             this->rendered = true;
         }
 
-        auto save_file() {
+        auto save_file(const std::string_view path) {
             if (!this->rendered) {
-                std::println(std::cerr, "Image is not rendered so image is not saved at {}", this->path);
+                std::println(std::cerr, "Image is not rendered so image is not saved at {}", path);
                 return;
             }
 
-            std::ofstream ofs{this->path.data()};
+            std::ofstream ofs{path.data()};
 
             if (ofs.is_open()) {
                 ofs << this->image;
 
                 ofs.close();
             } else {
-                std::println(std::cerr, "Cannot write ppm file to {}", this->path);
+                std::println(std::cerr, "Cannot write ppm file to {}", path);
             }
         }
     };

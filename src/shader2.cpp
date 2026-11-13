@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
     std::filesystem::create_directory("shader2-out");
 
     for (std::size_t t = 0; t < 60; ++t) {
-        ppm::ppm image = ppm::ppm(image_width, image_height, std::format("shader2-out/out-{:02d}.ppm", t));
+        ppm::ppm image = ppm::ppm(image_width, image_height);
 
         const math::vec2 r = math::vec2{ static_cast<float>(image_width), static_cast<float>(image_height) };
 
@@ -24,9 +24,9 @@ int main(int argc, char **argv) {
             math::vec2 p = (FC * 2.0f - r) / r.y;
             math::vec2 l{};
             math::vec2 i{};
-            math::vec2 v = p * (l = l + 4.0f-4.0f * std::abs(0.7f-p.dot(p)));
+            math::vec2 v = p * (l = l + 4.0f-4.0f * std::abs(0.7f - p.dot(p)));
 
-            for (; i.y++ < 8.0f; o = o + (v.xyyx().sin() + 1.0f) * std::abs(v.x-v.y)) {
+            for (; i.y++ < 8.0f; o = o + (v.xyyx().sin() + 1.0f) * std::abs(v.x - v.y)) {
                 v = v + (v.yx() * i.y + i + float_t / 60).cos() / i.y + 0.7f;
             }
 
@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
             return ppm::ppm::pixel{ static_cast<std::uint8_t>(o.x * 255), static_cast<std::uint8_t>(o.y * 255), static_cast<std::uint8_t>(o.z * 255) };
         });
 
-        image.save_file();
+        image.save_file(std::format("shader2-out/out-{:02d}.ppm", t));
     }
 
     return 0;
