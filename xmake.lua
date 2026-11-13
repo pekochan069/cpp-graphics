@@ -32,6 +32,12 @@ target("shader2")
     set_policy("build.c++.modules", true)
     add_files("src/shader2.cpp")
 
+target("shader3")
+    set_kind("binary")
+    add_deps("lib")
+    set_policy("build.c++.modules", true)
+    add_files("src/shader3.cpp")
+
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
 --
