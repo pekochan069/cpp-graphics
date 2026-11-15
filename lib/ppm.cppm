@@ -2,6 +2,8 @@ export module lib.ppm;
 
 import std;
 
+import lib.math;
+
 export namespace ppm {
     struct ppm {
         std::string image;
@@ -14,10 +16,14 @@ export namespace ppm {
             std::uint16_t r;
             std::uint16_t g;
             std::uint16_t b;
+
+            static auto from_vec3(const math::vec3 vec) -> pixel {
+                return pixel{ static_cast<std::uint16_t>(vec.x), static_cast<std::uint16_t>(vec.y), static_cast<std::uint16_t>(vec.z) };
+            }
         };
 
         ppm(const std::size_t width, const std::size_t height, const std::uint16_t max_color_value = 255)
-            : image{std::format("P3\n{} {}\n{}\n", width, height, max_color_value)}
+            : image{std::format("P6\n{} {}\n{}\n", width, height, max_color_value)}
             , width{width}
             , height{height}
             , max_color_value{max_color_value}
@@ -33,14 +39,14 @@ export namespace ppm {
                 for (std::size_t x = 0; x < this->width; ++x) {
                     const pixel p = render_fn(x, y);
 
-                    this->image += std::format("{} {} {}", p.r, p.g, p.b);
+                    for (const auto value : {p.r, p.g, p.b}) {
+                        if (this->max_color_value > 255) {
+                            this->image.push_back(static_cast<char>(value >> 8));
+                        }
 
-                    if (x != this->width - 1) {
-                        this->image += ' ';
+                        this->image.push_back(static_cast<char>(value & 0xff));
                     }
                 }
-
-                this->image += '\n';
             }
 
             this->rendered = true;
